@@ -27,3 +27,6 @@ before running you must populate the .env file with
 
 ## Develop
 Run the app.py to start your 
+```cmd  
+    python app.py
+  ```  

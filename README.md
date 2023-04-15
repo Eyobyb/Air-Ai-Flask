@@ -17,7 +17,7 @@
     ```  
     
 5. ```cmd   
-    source venv/bon/activate 
+    source venv/bin/activate 
    ```  
 
 6. ```cmd  

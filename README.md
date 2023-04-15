@@ -4,7 +4,7 @@
 ## Setup
 1. Clone the project 
 
-2.  ```cmd 
+2. ```cmd 
    cd Air-Ai-Flask
     ```
     

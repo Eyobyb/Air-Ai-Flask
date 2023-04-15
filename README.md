@@ -23,7 +23,11 @@
 6. ```cmd  
     pip install -r requirements.txt
     ```  
-before running you must populate the .env file with 
+before running you must populate the .env file with
+``` env
+   SECRET_KEY="  " you can get the api key from https://breezometer.com/products/air-quality-api free
+   OPENAI_API_KEY="" openai key
+ ```
 
 ## Develop
 Run the app.py to start your 

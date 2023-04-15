@@ -16,14 +16,22 @@ async def follow_up_question_checker(user_input, conversation_context):
     follow_up_Prompt = PromptTemplate(
         input_variables=['user_input', 'context'],
         template="""
-     am going to list a conversation and then a user text check if the user text can be a follow up answer to the assistan to clear the question he asked previously.
+      you are an air quality assistant. I am going to provide you with a conversation we had . and just like an API return JSON value. 
+  
+     from the conversation, check the "user text" that was given. whether it is a location correction or clarification follow up answer.
+    
      Conversation = {context}
      user text =  {user_input}
+     
     desired output :
      {{ 
         "is_a_follow_up_answer": "True" or "False" , 
         "reason": why it is or it is not and be specific
-           }}
+     }}
+
+     the desired output is json object only no other string 
+
+     
     """
     )
 
@@ -31,7 +39,7 @@ async def follow_up_question_checker(user_input, conversation_context):
     return follow_up_checker.run(context=conversation_context, user_input=user_input)
 
 
-async def follow_up_question_generator(user_input , context):
+async def follow_up_question_generator(user_input, context):
     prompt = PromptTemplate(
         input_variables=['user_input', 'context'],
         template="""
@@ -67,8 +75,9 @@ async def location_checker(user_input):
         we are going to play a game. the game is about listing locations from a given text called context.
         the game rules are.
         . json output only
-        . if one of the location that you found is unkown or only known to the Context writer. then write a question here for clarification about the given location.
+        . if one of the location that you found is unkown or only known to the Context writer. then write a question in fq for clarification about the given location.
         . you only ask a question about the unkown location not anything else
+
                     {{
                         "locations: list all locations mensioned in the QQ ,
                         "fq": 
@@ -79,8 +88,6 @@ async def location_checker(user_input):
     )
     location_chain = LLMChain(llm=llm, prompt=prompt)
     return location_chain.run(user_input=user_input)
-
-
 
 
 async def api_data_fetcher(lists):
@@ -130,9 +137,10 @@ async def position_finder(user_input):
 
 async def default_llm(user_input, context):
     prompt = PromptTemplate(
-        input_variables=['user_input' , 'context'],
+        input_variables=['user_input', 'context'],
         template=""" 
         you are a friendly air quality data assistant. 
+        in the context you are the assistant and I am the user.
         if you are asked
         about what BAQIS it is a custom air quality index that creates a
         common indexing value where different nations have their own indexing 
@@ -198,7 +206,8 @@ def summery_data_cleaner(data):
                 final_string = final_string + ' ' + \
                     name + ' ' + str(ammount) + unit + ', '
         else:
-            final_string = final_string + " error The location specified in the request is unsupported"
+            final_string = final_string + \
+                " error The location specified in the request is unsupported"
         pollutant_list = pollutant_list + final_string + '\n'
 
     return pollutant_list

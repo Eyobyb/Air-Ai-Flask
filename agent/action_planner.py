@@ -1,7 +1,7 @@
 from langchain.llms import OpenAI
 import asyncio
 from dotenv import load_dotenv
-from .utils import json_loader, is_air_quality_in, is_follow_up, white_space_remover
+from .utils import conversation_context_builder, json_loader, is_air_quality_in, is_follow_up, white_space_remover
 from .context_utils import get_context, add_context
 from .actions import position_finder, location_checker, summeriy_generator, default_llm, follow_up_question_checker, follow_up_question_generator, api_data_fetcher, summery_data_cleaner
 
@@ -27,9 +27,11 @@ async def result_generator(user_input, context):
         "air_quality_data": []
     }
     if is_air_quality_in(user_input):
+      
         location_task = asyncio.create_task(
             location_checker(user_input))
         location_task_data = await location_task
+
         filter_data = json_loader(location_task_data)
         if filter_data.get('fq') != "":
             result["content"] = filter_data.get('fq')
@@ -60,22 +62,27 @@ async def result_generator(user_input, context):
 async def action_planner(user_input, session_id):
     context_task = asyncio.create_task(get_context(session_id))
     context = await context_task
+    context = conversation_context_builder(context)
     final_data = {}
     follow_up_question_checker_task = asyncio.create_task(
         is_follow_up_answer(user_input, context))
     follow_up_question_checker_value = await follow_up_question_checker_task
-
     if (follow_up_question_checker_value):
         follow_up_generator_task = asyncio.create_task(
-            follow_up_question_generator(user_input , context))
+            follow_up_question_generator(user_input, "context"))
         follow_up_question_value = await follow_up_generator_task
-        final_data_taks = asyncio.create_task(result_generator(follow_up_question_value , context))
+        final_data_taks = asyncio.create_task(
+            result_generator(follow_up_question_value, context))
         final_data = await final_data_taks
     else:
-        is_air_quality_in(user_input)
-        final_data_taks = asyncio.create_task(result_generator(user_input , context))
+
+    
+        final_data_taks = asyncio.create_task(
+            result_generator(user_input, context))
         final_data = await final_data_taks
-    add_context(final_data , session_id)
+    add_context({"content": user_input, "role": "user",
+                "air_quality_data": []}, session_id)
+    add_context(final_data, session_id)
     final_data['session_id'] = session_id
     return final_data
 
@@ -85,4 +92,3 @@ async def main(user_input, session_id):
     task = action_planner(user_input, session_id)
     task = await task
     return task
-

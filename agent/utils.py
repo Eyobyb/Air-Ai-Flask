@@ -6,15 +6,25 @@ import requests
 from dotenv import load_dotenv
 load_dotenv()
 
+
 def is_follow_up(value: str) -> bool:
-    value = json.loads(value)
+    value = {}
+    try:
+        value: json.loads(value)
+    except:
+        result = re.search(r"{(.*)}", string)
+
+        if result:
+            extracted_value = result.group(1)
+            result = json.loads(extracted_value)
+            return False
+
     return value.get("is_a_follow_up_answer") == "True"
 
 
 def is_air_quality_in(text: str) -> bool:
     pattern = r"\bair\s*quality\b"
     match = re.search(pattern, text)
-
     if match:
         return True
     else:
@@ -37,3 +47,12 @@ async def get_polutant(lat, lon):
     response = requests.get(url)
     response_json = response.json()
     return response_json
+
+
+def conversation_context_builder(context):
+    value = """"""
+
+    for conversation in context:
+        value = value + "\n" + \
+            conversation['role'] + ': ' + conversation["content"] + "\n"
+    return value

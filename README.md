@@ -3,15 +3,19 @@
 # Backend for the ChatBot using Langchain
 ## Setup
 1. Clone the project 
+
 2.  ```cmd 
    cd Air-Ai-Flask
     ```
+    
 3. ```cmd 
    pip install virtualenv 
     ```  
+    
 4. ```cmd  
     virtualenv -p python3 venv 
     ```  
+    
 5. ```cmd   
     source venv/bon/activate 
    ```  

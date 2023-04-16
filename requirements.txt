@@ -1,5 +1,5 @@
 jsonargparse==4.19.0
-langchain==0.0.130
+langchain
 openai==0.27.0
 Flask-Cors==3.0.10
 tinydb==4.7.1

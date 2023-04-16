@@ -6,7 +6,4 @@ tinydb==4.7.1
 python-dotenv==1.0.0
 asyncio==3.4.3
 Flask[async]
-
-# pip install -r requirements.txt
-#source venv/bin/activate
-# deactivate
+Gunicorn

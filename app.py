@@ -19,5 +19,5 @@ async def pushConversation():
     data = await main(user_input, session_id)
     return jsonify(data)
 
-
-app.run(host="0.0.0.0", port=8004)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8004)
